@@ -148,36 +148,30 @@
     <main class="max-w-7xl mx-auto px-4 py-8 space-y-16">
 
         <!-- VIDEO + IMAGE SLIDER -->
-        <div class="slider-container">
-            <div class="slides-wrapper" id="slidesWrapper">
-                <!-- Slide 1: Video -->
-                <div class="slide" data-type="video">
-                    <video class="slide-video" muted loop playsinline>
-                        <source src="1.mp4" type="video/mp4">
-                    </video>
-                    <div class="slide-caption">🔥 New Arrivals: Explore Now</div>
-                </div>
-                <!-- Slide 2: Image -->
-               <div class="slide" data-type="video">
-                    <video class="slide-video" muted loop playsinline>
-                        <source src="2.mp4" type="video/mp4">
-                    </video>
-                    <div class="slide-caption">🔥 New Arrivals: Buy Now</div>
-                </div>
-                <!-- Slide 3: Video -->
-                <div class="slide" data-type="video">
-                    <video class="slide-video" muted loop playsinline>
-                        <source src="3.mp4" type="video/mp4">
-                    </video>
-                    <div class="slide-caption">🎧 Best Electronics Deals</div>
-                </div>
-                <!-- Slide 4: Image -->
-                <div class="slide" data-type="video">
-                    <video class="slide-video" muted loop playsinline>
-                        <source src="4.mp4" type="video/mp4">
-                    </video>
-                    <div class="slide-caption">🔥 New Arrivals: Explore Now</div>
-                </div>
+     <div class="slide" data-type="video">
+    <video class="slide-video" autoplay muted loop playsinline preload="auto">
+        <source src="1.mp4" type="video/mp4">
+    </video>
+    <div class="slide-caption">🔥 New Arrivals</div>
+</div>
+<div class="slide" data-type="video">
+    <video class="slide-video" autoplay muted loop playsinline preload="auto">
+        <source src="2.mp4" type="video/mp4">
+    </video>
+    <div class="slide-caption">🎧 Best Electronics</div>
+</div>
+<div class="slide" data-type="video">
+    <video class="slide-video" autoplay muted loop playsinline preload="auto">
+        <source src="3.mp4" type="video/mp4">
+    </video>
+    <div class="slide-caption">🔥 New Arrivals: Buy Now</div>
+</div>
+<div class="slide" data-type="video">
+    <video class="slide-video" autoplay muted loop playsinline preload="auto">
+        <source src="4.mp4" type="video/mp4">
+    </video>
+    <div class="slide-caption">🎧 Best Electronics Deals</div>
+</div>
             <!-- Buttons -->
             <button class="slider-btn prev" onclick="prevSlide()">❮</button>
             <button class="slider-btn next" onclick="nextSlide()">❯</button>
@@ -284,24 +278,30 @@
             });
         }
 
-        function goToSlide(index) {
-            if (index < 0) index = 0;
-            if (index >= totalSlides) index = totalSlides - 1;
-            currentIndex = index;
-            wrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
-            updateDots();
-            slides.forEach((slide, i) => {
-                const video = slide.querySelector('video');
-                if (video) {
-                    if (i === currentIndex) {
-                        video.muted = true;
-                        video.play().catch(e => console.log("Autoplay prevented", e));
-                    } else {
-                        video.pause();
-                    }
-                }
-            });
+       function goToSlide(index) {
+    if (index < 0) index = 0;
+    if (index >= totalSlides) index = totalSlides - 1;
+    currentIndex = index;
+    wrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+    updateDots();
+
+    slides.forEach((slide, i) => {
+        const video = slide.querySelector('video');
+        if (video) {
+            if (i === currentIndex) {
+                // Current video: ensure it plays
+                video.muted = true;
+                video.play().catch(e => {
+                    console.log("Video play error, reloading:", e);
+                    video.load();
+                    video.play().catch(() => {});
+                });
+            } else {
+                video.pause();
+            }
         }
+    });
+}
 
         function nextSlide() {
             if (currentIndex < totalSlides - 1) goToSlide(currentIndex + 1);
