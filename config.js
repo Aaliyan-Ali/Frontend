@@ -11,4 +11,4 @@
 // Production mein Railway ka URL use karein
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:5000'
-    : 'https://YOUR-RAILWAY-URL.up.railway.app'; // ← Railway URL yahan daalein after deploy
+    : 'https://backend-production-4620.up.railway.app';
