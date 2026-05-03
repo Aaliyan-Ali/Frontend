@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products | TREND HIVE</title>
+    <meta name="description" content="Shop all products at TREND HIVE - Clothing, Electronics, Footwear and Accessories.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .cart-toast { position: fixed; bottom: 20px; right: 20px; background: #000; color: #fff; padding: 12px 24px; border-radius: 50px; z-index: 1000; box-shadow: 0 10px 20px rgba(0,0,0,0.3); font-weight: 600; animation: fadeUp 0.3s ease; }
+        .star-gold { color: #fbbf24; }
+        @keyframes fadeUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="/" class="text-3xl font-black italic tracking-tighter">TREND<span class="text-gray-400">HIVE</span></a>
+            <div class="hidden md:flex gap-8 items-center font-bold text-sm uppercase tracking-widest">
+                <a href="/" class="hover:text-gray-400">Home</a>
+                <a href="/products.html" class="text-black underline underline-offset-8">Products</a>
+                <a href="/admin.html" class="hover:text-gray-400">Admin</a>
+            </div>
+            <div id="cartCountBadge" class="bg-black text-white px-4 py-1 rounded-full text-xs font-bold">CART: 0</div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-12">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+            <div class="w-full md:w-1/2">
+                <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Search Catalog</label>
+                <input type="text" id="searchInput" onkeyup="searchProducts()" placeholder="Try 'Jacket', 'Electronics', or 'Leather'..." class="w-full p-4 rounded-2xl border-none shadow-inner bg-gray-200 focus:ring-2 focus:ring-black transition-all">
+            </div>
+            <div class="text-right">
+                <p class="text-xs text-gray-400 font-bold uppercase tracking-widest" id="productCount">Loading...</p>
+            </div>
+        </div>
+
+        <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <!-- Products load hone par yahan aayenge -->
+            <div class="col-span-full text-center py-20 text-gray-400 font-bold">
+                <div class="text-4xl mb-4">⏳</div>
+                <p>Products load ho rahe hain...</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="config.js"></script>
+    <script>
+        let allProducts = [];
+        let cartCount = 0;
+
+        function generateStars(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += `<span class="${i <= Math.round(rating) ? 'star-gold' : 'text-gray-200'} text-lg">★</span>`;
+            }
+            return stars;
+        }
+
+        function renderProducts(products) {
+            const grid = document.getElementById('productsGrid');
+            document.getElementById('productCount').textContent = `${products.length} Items`;
+
+            if (products.length === 0) {
+                grid.innerHTML = "<div class='col-span-full py-20 text-center text-gray-400 font-bold'>NO MATCHES FOUND</div>";
+                return;
+            }
+            grid.innerHTML = products.map(p => `
+                <div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col">
+                    <img src="${p.image}" class="h-72 w-full object-cover" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400'">
+                    <div class="p-8 flex-1 flex flex-col">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-black text-xl uppercase leading-tight">${p.name}</h3>
+                            <span class="text-2xl font-light text-gray-400">$${p.price}</span>
+                        </div>
+                        <div class="mb-2">${generateStars(p.rating)}</div>
+                        <span class="text-xs text-gray-400 uppercase tracking-widest mb-3">${p.category}</span>
+                        <p class="text-gray-400 text-sm mb-8 leading-relaxed flex-1">${p.description}</p>
+                        <button onclick='buyNow(${JSON.stringify(p)})' class="w-full bg-black text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-gray-800 active:scale-95 transition-all">
+                            Place Order
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function loadProducts() {
+            try {
+                const res = await fetch(`${API_BASE}/api/products?t=` + Date.now());
+                allProducts = await res.json();
+                renderProducts(allProducts);
+            } catch (err) {
+                document.getElementById('productsGrid').innerHTML = "<div class='col-span-full py-20 text-center text-red-400 font-bold'>❌ Products load nahi hue. Backend check karein.</div>";
+                console.error('Products load error:', err);
+            }
+        }
+
+        function searchProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allProducts.filter(p =>
+                p.name.toLowerCase().includes(query) ||
+                p.category.toLowerCase().includes(query) ||
+                p.description.toLowerCase().includes(query)
+            );
+            renderProducts(filtered);
+        }
+
+        async function buyNow(product) {
+            const user = JSON.parse(localStorage.getItem('user') || 'null');
+            try {
+                const res = await fetch(`${API_BASE}/api/orders`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        productName: product.name,
+                        productImage: product.image,
+                        productId: product.id,
+                        customerName: user ? user.name : "Guest Customer",
+                        userEmail: user ? user.email : "guest@trendhive.app",
+                        comment: "New Order Placed via Shop"
+                    })
+                });
+
+                if (res.ok) {
+                    cartCount++;
+                    document.getElementById('cartCountBadge').innerText = `CART: ${cartCount}`;
+                    showToast(`✅ ${product.name} – Order Place Ho Gaya!`);
+                }
+            } catch (err) {
+                showToast('❌ Order place nahi hua. Dobara try karein.');
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'cart-toast';
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        window.onload = loadProducts;
+    </script>
+</body>
+</html>
