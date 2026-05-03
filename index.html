@@ -363,7 +363,7 @@
                     showToast('❌ ' + data.message, 'error');
                 }
             } catch (err) {
-                showToast('❌ Server se connection nahi ho raha', 'error');
+                showToast('❌ Server is not connected', 'error');
             }
         }
 
@@ -374,7 +374,7 @@
             const password = document.getElementById('signupPassword').value;
 
             if (!name || !email || !password) {
-                showToast('❌ Tamam fields bharo!', 'error');
+                showToast('❌ Fill all feilds!', 'error');
                 return;
             }
 
@@ -393,7 +393,7 @@
                     showToast('❌ ' + data.message, 'error');
                 }
             } catch (err) {
-                showToast('❌ Server se connection nahi ho raha', 'error');
+                showToast('❌ Server is not connected', 'error');
             }
         }
 
