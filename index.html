@@ -147,8 +147,7 @@
 
     <main class="max-w-7xl mx-auto px-4 py-8 space-y-16">
 
-       
-  <!-- VIDEO + IMAGE SLIDER -->
+        <!-- VIDEO + IMAGE SLIDER -->
         <div class="slider-container">
             <div class="slides-wrapper" id="slidesWrapper">
                 <!-- Slide 1: Video -->
@@ -159,11 +158,10 @@
                     <div class="slide-caption">🔥 New Arrivals: Explore Now</div>
                 </div>
                 <!-- Slide 2: Image -->
-             <div class="slide" data-type="image">
+                <div class="slide" data-type="image">
                     <img class="slide-image" src="2.jpg" alt="Fashion sale">
                     <div class="slide-caption">👕 Trendy Clothing – Up to 40% Off</div>
-                </div> 
-
+                </div>
                 <!-- Slide 3: Video -->
                 <div class="slide" data-type="video">
                     <video class="slide-video" muted loop playsinline>
@@ -172,11 +170,11 @@
                     <div class="slide-caption">🎧 Best Electronics Deals</div>
                 </div>
                 <!-- Slide 4: Image -->
-               <div class="slide" data-type="image">
-                    <img class="slide-image" src="2.jpg" alt="Fashion sale">
-                    <div class="slide-caption">👕 Trendy Clothing – Up to 40% Off</div>
-                </div> 
-
+                <div class="slide" data-type="image">
+                    <img class="slide-image" src="4.jpg" alt="Sneakers">
+                    <div class="slide-caption">👟 Premium Footwear – Free Shipping</div>
+                </div>
+            </div>
             <!-- Buttons -->
             <button class="slider-btn prev" onclick="prevSlide()">❮</button>
             <button class="slider-btn next" onclick="nextSlide()">❯</button>
@@ -283,7 +281,7 @@
             });
         }
 
-     function goToSlide(index) {
+        function goToSlide(index) {
             if (index < 0) index = 0;
             if (index >= totalSlides) index = totalSlides - 1;
             currentIndex = index;
@@ -301,6 +299,7 @@
                 }
             });
         }
+
         function nextSlide() {
             if (currentIndex < totalSlides - 1) goToSlide(currentIndex + 1);
             else goToSlide(0);
@@ -364,7 +363,7 @@
                     showToast('❌ ' + data.message, 'error');
                 }
             } catch (err) {
-                showToast('❌ Server is not connected', 'error');
+                showToast('❌ Server se connection nahi ho raha', 'error');
             }
         }
 
@@ -375,7 +374,7 @@
             const password = document.getElementById('signupPassword').value;
 
             if (!name || !email || !password) {
-                showToast('❌ Fill all feilds!', 'error');
+                showToast('❌ Tamam fields bharo!', 'error');
                 return;
             }
 
@@ -394,7 +393,7 @@
                     showToast('❌ ' + data.message, 'error');
                 }
             } catch (err) {
-                showToast('❌ Server is not connected', 'error');
+                showToast('❌ Server se connection nahi ho raha', 'error');
             }
         }
 
